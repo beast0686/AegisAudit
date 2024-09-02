@@ -6,7 +6,7 @@ from dashboard import Dashboard
 from configuration import AuditConfiguration
 from executionControl import ExecutionControl
 from result import ResultsDisplay
-from ssues import IssueManagement
+from issues import IssueManagement
 
 class MainWindow(QMainWindow):
     def __init__(self):

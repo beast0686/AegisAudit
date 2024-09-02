@@ -1,6 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget
 
+# Direct imports since all files are in the same directory
 from userLogins import UserManagement
 from dashboard import Dashboard
 from configuration import AuditConfiguration
@@ -15,6 +16,7 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
 
+        # Create the tabs in the specified order
         self.user_management_tab = UserManagement()
         self.tab_widget.addTab(self.user_management_tab, "User Management")
 
@@ -32,6 +34,21 @@ class MainWindow(QMainWindow):
 
         self.issue_management_tab = IssueManagement()
         self.tab_widget.addTab(self.issue_management_tab, "Issue Management")
+
+        # Disable all tabs except User Management by default
+        self.enable_tabs(False)
+
+        # Connect user management login signal
+        self.user_management_tab.user_logged_in.connect(self.on_user_logged_in)
+
+    def enable_tabs(self, enable):
+        # Enable or disable all tabs except User Management
+        for i in range(1, self.tab_widget.count()):
+            self.tab_widget.setTabEnabled(i, enable)
+
+    def on_user_logged_in(self):
+        # Enable other tabs when a user is logged in
+        self.enable_tabs(True)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

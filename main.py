@@ -1,12 +1,12 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget
 
-from AuditR.UserLogins import UserManagement
-from AuditR.Dashboard import Dashboard
-from AuditR.Configuration import AuditConfiguration
-from AuditR.ExecutionControl import ExecutionControl
-from AuditR.Result import ResultsDisplay
-from AuditR.Issues import IssueManagement
+from UserLogins import UserManagement
+from Dashboard import Dashboard
+from Configuration import AuditConfiguration
+from ExecutionControl import ExecutionControl
+from Result import ResultsDisplay
+from Issues import IssueManagement
 
 class MainWindow(QMainWindow):
     def __init__(self):

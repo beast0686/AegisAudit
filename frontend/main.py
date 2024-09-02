@@ -15,6 +15,9 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
 
+        self.user_management_tab = UserManagement()
+        self.tab_widget.addTab(self.user_management_tab, "User Management")
+
         self.dashboard_tab = Dashboard()
         self.tab_widget.addTab(self.dashboard_tab, "Dashboard")
 
@@ -29,9 +32,6 @@ class MainWindow(QMainWindow):
 
         self.issue_management_tab = IssueManagement()
         self.tab_widget.addTab(self.issue_management_tab, "Issue Management")
-
-        self.user_management_tab = UserManagement()
-        self.tab_widget.addTab(self.user_management_tab, "User Management")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

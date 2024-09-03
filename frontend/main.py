@@ -9,6 +9,7 @@ from executionControl import ExecutionControl
 from result import ResultsDisplay
 from issues import IssueManagement
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -49,6 +50,7 @@ class MainWindow(QMainWindow):
     def on_user_logged_in(self):
         # Enable other tabs when a user is logged in
         self.enable_tabs(True)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

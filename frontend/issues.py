@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QMessageBox, QLabel
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHeaderView  # Import QHeaderView for ResizeMode
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtWidgets import QHeaderView
 
 
 class IssueManagement(QWidget):
@@ -11,7 +12,7 @@ class IssueManagement(QWidget):
 
         # Issues Table
         self.issues_table = QTableWidget()
-        self.issues_table.setRowCount(0)
+        self.issues_table.setRowCount(3)
         self.issues_table.setColumnCount(4)
         self.issues_table.setHorizontalHeaderLabels(['Issue', 'Severity', 'Description', 'Status'])
 
@@ -30,10 +31,29 @@ class IssueManagement(QWidget):
         self.mark_resolved_button.clicked.connect(self.mark_resolved)
         self.layout.addWidget(self.mark_resolved_button)
 
+        # Mark as Unresolved Button
+        self.mark_unresolved_button = QPushButton("Mark as Unresolved")
+        self.mark_unresolved_button.clicked.connect(self.mark_unresolved)
+        self.layout.addWidget(self.mark_unresolved_button)
+
     def mark_resolved(self):
         selected_row = self.issues_table.currentRow()
         if selected_row != -1:
-            item = QTableWidgetItem("Resolved")
-            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.issues_table.setItem(selected_row, 3, item)
+            # Set the status with tick image
+            status_label = QLabel()
+            pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\check.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            status_label.setPixmap(pixmap)
+            status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the image in the cell
+            self.issues_table.setCellWidget(selected_row, 3, status_label)
             QMessageBox.information(self, "Issue Resolved", "Issue has been marked as resolved.")
+
+    def mark_unresolved(self):
+        selected_row = self.issues_table.currentRow()
+        if selected_row != -1:
+            # Set the status with cross image
+            status_label = QLabel()
+            pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\cross.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            status_label.setPixmap(pixmap)
+            status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the image in the cell
+            self.issues_table.setCellWidget(selected_row, 3, status_label)
+            QMessageBox.information(self, "Issue Unresolved", "Issue has been marked as unresolved.")

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTa
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHeaderView
 
+
 class UserManagement(QWidget):
     user_logged_in = pyqtSignal()  # Signal to notify that a user has logged in
 

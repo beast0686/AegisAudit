@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QMessageBox
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QHeaderView
 
 class UserManagement(QWidget):
     user_logged_in = pyqtSignal()  # Signal to notify that a user has logged in
@@ -9,16 +10,27 @@ class UserManagement(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
+        # Users Table
         self.users_table = QTableWidget()
         self.users_table.setRowCount(0)
         self.users_table.setColumnCount(3)
         self.users_table.setHorizontalHeaderLabels(['Username', 'Role', 'Status'])
+
+        # Adjusting column widths to fit the window size
+        self.users_table.horizontalHeader().setStretchLastSection(True)
+        self.users_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)  # Username column
+        self.users_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Role column
+        self.users_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)  # Status column
+
+        # Add the table to the layout
         self.layout.addWidget(self.users_table)
 
+        # Add User Button
         self.add_user_button = QPushButton("Add User")
         self.add_user_button.clicked.connect(self.add_user)
         self.layout.addWidget(self.add_user_button)
 
+        # Login Button
         self.login_button = QPushButton("Login as Selected User")
         self.login_button.clicked.connect(self.login_user)
         self.layout.addWidget(self.login_button)

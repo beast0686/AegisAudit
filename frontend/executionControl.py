@@ -26,21 +26,21 @@ class ExecutionControl(QWidget):
 
         # Stop button with an icon
         self.stop_button = QPushButton()
-        self.stop_button.setIcon(QIcon(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Execution Control\stop.png"))
+        self.stop_button.setIcon(QIcon(r"..\images\Execution Control\stop.png"))
         self.stop_button.setIconSize(QSize(32, 32))
         self.stop_button.clicked.connect(self.stop_audit)
         self.button_layout.addWidget(self.stop_button)
 
         # Pause button with an icon
         self.pause_button = QPushButton()
-        self.pause_button.setIcon(QIcon(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Execution Control\pause.png"))
+        self.pause_button.setIcon(QIcon(r"..\images\Execution Control\pause.png"))
         self.pause_button.setIconSize(QSize(32, 32))
         self.pause_button.clicked.connect(self.pause_audit)
         self.button_layout.addWidget(self.pause_button)
 
         # Start button with an icon
         self.start_button = QPushButton()
-        self.start_button.setIcon(QIcon(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Execution Control\play.png"))
+        self.start_button.setIcon(QIcon(r"..\images\Execution Control\play.png"))
         self.start_button.setIconSize(QSize(32, 32))
         self.start_button.clicked.connect(self.start_audit)
         self.button_layout.addWidget(self.start_button)

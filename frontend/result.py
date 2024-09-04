@@ -63,8 +63,8 @@ class ResultsDisplay(QWidget):
         self.layout.addWidget(self.export_button, alignment=Qt.AlignmentFlag.AlignRight)
 
         # Load tick and cross images
-        self.tick_pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Results\check.png")
-        self.cross_pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Results\cross.png")
+        self.tick_pixmap = QPixmap(r"..\images\Results\check.png")
+        self.cross_pixmap = QPixmap(r"..\images\Results\cross.png")
 
     def display_checks(self):
         # Get selected program

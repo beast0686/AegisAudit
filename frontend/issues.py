@@ -41,7 +41,7 @@ class IssueManagement(QWidget):
         if selected_row != -1:
             # Set the status with tick image
             status_label = QLabel()
-            pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\check.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            pixmap = QPixmap(r"..\images\Issues\check.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             status_label.setPixmap(pixmap)
             status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the image in the cell
             self.issues_table.setCellWidget(selected_row, 3, status_label)
@@ -52,7 +52,7 @@ class IssueManagement(QWidget):
         if selected_row != -1:
             # Set the status with cross image
             status_label = QLabel()
-            pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\cross.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            pixmap = QPixmap(r"..\images\Issues\cross.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             status_label.setPixmap(pixmap)
             status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the image in the cell
             self.issues_table.setCellWidget(selected_row, 3, status_label)

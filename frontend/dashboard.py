@@ -60,8 +60,8 @@ class Dashboard(QWidget):
         self.audit_history_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         # Load tick and cross images
-        self.tick_pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\check.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        self.cross_pixmap = QPixmap(r"D:\BNMIT\Engineering CSE\SIH 2024\Local\images\Issues\cross.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        self.tick_pixmap = QPixmap(r"..\images\Issues\check.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        self.cross_pixmap = QPixmap(r"..\images\Issues\cross.png").scaled(20, 20, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
 
         # Adding example audit history details with images for status
         self.add_audit_history_row(0, "Initial Configuration Audit", True, "2024-09-01")

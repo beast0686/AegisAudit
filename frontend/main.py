@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyleSheet("QLineEdit { background-color: Violet }")
+    app.setStyleSheet("QLineEdit { background-color: White }")
     window = MainWindow()
     window.showMaximized()
     sys.exit(app.exec())

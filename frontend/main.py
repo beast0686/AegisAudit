@@ -27,20 +27,19 @@ class MainWindow(QMainWindow):
         # Set large icon size for the tabs
         self.tab_list.setIconSize(QSize(48, 48))
 
-        # Apply custom styling for black background and white text
+        # Apply custom styling: remove black background and set text color to black
         self.tab_list.setStyleSheet("""
             QListWidget {
-                background-color: black;
-                color: white;
                 font-size: 20px;  /* Larger font size */
+                color: black;  /* Set text color to black */
             }
             QListWidget::item {
                 padding: 10px;  /* Add space between items */
                 margin-bottom: 10px;  /* Additional space at the bottom of each item */
             }
             QListWidget::item:selected {
-                background-color: #505050;  /* Darker grey when selected */
-                color: white;
+                background-color: lightgray;  /* Light gray when selected */
+                color: black;
             }
         """)
 
@@ -65,7 +64,8 @@ class MainWindow(QMainWindow):
         self.tab_content.setStyleSheet("""
             QWidget {
                 font-size: 16px;  /* Set text size to 16px */
-                font-family: 'Arial Rounded MT';  /* Set font to Arial Rounded MT */
+                font-family: 'Palatino Linotype';  /* Set font to Palatino Linotype */
+                color: black;  /* Set text color to black */
             }
         """)
 
@@ -108,9 +108,6 @@ class MainWindow(QMainWindow):
         # Set default selection to the User Management tab
         self.tab_list.setCurrentRow(0)
 
-        # Set the window background color to black
-        self.setStyleSheet("QMainWindow { background-color: black; color: white; }")
-
     def add_tab(self, name, icon_path, index):
         """Add a tab with an icon and name to the QListWidget"""
         item = QListWidgetItem(QIcon(icon_path), name)
@@ -147,61 +144,46 @@ if __name__ == "__main__":
     else:
         print(f"Logo file not found at {logo_path}")
 
-    # Set global application font to "Arial Rounded MT"
-    app_font = QFont("Arial Rounded MT", 12)
+    # Set global application font to "Palatino Linotype"
+    app_font = QFont("Palatino Linotype", 12)
     app.setFont(app_font)
 
-    # Set global styling for black background, white text, and Arial Rounded MT font
+    # Set global styling with Palatino Linotype font and black text
     app.setStyleSheet("""
         QWidget {
-            background-color: black;
-            color: white;
-            font-family: 'Arial Rounded MT';  /* Use Arial Rounded MT globally */
+            color: black;  /* Set text color to black */
+            font-family: 'Palatino Linotype';  /* Use Palatino Linotype globally */
         }
         QPushButton {
-            background-color: #303030;  /* Darker grey for buttons */
-            color: white;
-            border: 1px solid white;
-            font-family: 'Arial Rounded MT';
-        }
-        QPushButton:hover {
-            background-color: #505050;  /* Lighter grey on hover */
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QLabel {
-            color: white;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QLineEdit {
-            background-color: #404040;
-            color: white;
-            border: 1px solid white;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QComboBox {
-            background-color: #404040;
-            color: white;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QTableView {
-            background-color: black;
-            color: white;
-            gridline-color: white;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QHeaderView::section {
-            background-color: black;
-            color: white;
-            border: 1px solid white;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QTabBar::tab {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            font-family: 'Arial Rounded MT';
+            color: black;
+            font-family: 'Palatino Linotype';
         }
         QTabBar::tab:selected {
-            background-color: #505050;  /* Lighter grey when selected */
+            background-color: lightgray;  /* Light gray on selection */
         }
     """)
 

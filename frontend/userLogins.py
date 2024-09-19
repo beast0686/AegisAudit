@@ -33,7 +33,7 @@ class UserManagement(QWidget):
         self.main_layout.addWidget(self.add_user_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def add_user(self):
-        dialog = UserDialog(self)
+        dialog = AddUserDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             username, password = dialog.get_data()
 
@@ -53,8 +53,19 @@ class UserManagement(QWidget):
 
     def login_user(self, username):
         # Handle user login and emit signal
-        QMessageBox.information(self, "User Logged In", f"Logged in as {username}")
-        self.user_logged_in.emit()
+        dialog = LoginUserDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            password = dialog.get_data()
+            if not password:
+                QMessageBox.warning(self, "Input Error", "Password is required.")
+                return
+
+            user_loggedin = Register_Login.login_user(username, password)
+            if user_loggedin:
+                QMessageBox.information(self, "User Logged In", f"Logged in as {username}")
+                self.user_logged_in.emit()
+            else:
+                QMessageBox.warning(self, "Failed to login", "Invalid password.")
 
     def fill_grid_with_profiles(self):
         # Clear the grid layout first
@@ -114,7 +125,7 @@ class UserManagement(QWidget):
         return rows
 
 
-class UserDialog(QDialog):
+class AddUserDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Add New User")
@@ -137,3 +148,25 @@ class UserDialog(QDialog):
     def get_data(self):
         # Return the username and password entered by the user
         return self.username_input.text(), self.password_input.text()
+
+class LoginUserDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Login User")
+
+        # Create layout and form fields
+        layout = QFormLayout(self)
+        self.password_input = QLineEdit(self)
+        self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        layout.addRow(QLabel("Password:"), self.password_input)
+
+        # OK and Cancel buttons
+        self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
+                                        self)
+        layout.addWidget(self.buttons)
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
+
+    def get_data(self):
+        # Return the username and password entered by the user
+        return self.password_input.text()

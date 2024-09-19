@@ -22,7 +22,6 @@ def create_db():
 
 
 def create_secure_password(password, salt=os.urandom(16).hex()):
-    # iterations = 100_000
     password_hash = hashlib.sha256((salt + password).encode()).hexdigest()
     return [password_hash, salt]
 

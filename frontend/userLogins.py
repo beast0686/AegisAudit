@@ -1,10 +1,12 @@
 import Register_Login
-from PyQt6.QtWidgets import QDialog, QFormLayout, QLabel, QDialogButtonBox, QWidget, QVBoxLayout, QGridLayout, QPushButton, QMessageBox, QLineEdit, QSizePolicy
+from PyQt6.QtWidgets import QDialog, QFormLayout, QLabel, QDialogButtonBox, QWidget, QVBoxLayout, QGridLayout, \
+    QPushButton, QMessageBox, QLineEdit, QSizePolicy
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QIcon, QFont
 from PyQt6.QtCore import QSize
 import sqlite3
 import os
+
 
 class UserManagement(QWidget):
     user_logged_in = pyqtSignal()  # Signal to notify that a user has logged in
@@ -111,6 +113,7 @@ class UserManagement(QWidget):
         mydb.close()
         return rows
 
+
 class UserDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -125,7 +128,8 @@ class UserDialog(QDialog):
         layout.addRow(QLabel("Password:"), self.password_input)
 
         # OK and Cancel buttons
-        self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, self)
+        self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
+                                        self)
         layout.addWidget(self.buttons)
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)

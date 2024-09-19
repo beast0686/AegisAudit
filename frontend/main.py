@@ -116,18 +116,22 @@ class MainWindow(QMainWindow):
         self.tab_list.addItem(item)
 
     def enable_tabs(self, enable):
-        # Enable or disable all tabs except User Management
+        """Enable or disable all tabs except User Management (index 0)"""
         for i in range(1, self.tab_list.count()):
-            self.tab_list.item(i).setFlags(
-                self.tab_list.item(i).flags() | (Qt.ItemFlag.ItemIsEnabled if enable else Qt.ItemFlag.ItemIsSelectable)
-            )
+            item = self.tab_list.item(i)
+            if enable:
+                # Enable the tab
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
+            else:
+                # Disable the tab
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
 
     def on_user_logged_in(self):
-        # Enable other tabs when a user is logged in
+        """Enable other tabs when a user is logged in"""
         self.enable_tabs(True)
 
     def switch_tab(self, index):
-        # Switch to the corresponding tab content based on the index
+        """Switch to the corresponding tab content based on the index"""
         self.tab_content.setCurrentIndex(index)
 
 

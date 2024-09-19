@@ -44,8 +44,40 @@ class MainWindow(QMainWindow):
         # Create stacked widget to display the selected tab's content (right window)
         self.tab_content = QStackedWidget()
 
-        # Add the list and the tab content area to the splitter
-        self.splitter.addWidget(self.tab_list)
+        # Create a container widget for the left panel (tab list + buttons)
+        left_panel_widget = QWidget()
+        left_panel_layout = QVBoxLayout()
+
+        # Create a horizontal layout for the buttons
+        button_layout = QHBoxLayout()
+
+        # Add the minimize button (on the left)
+        self.minimize_button = QPushButton(self)
+        self.minimize_button.setIcon(QIcon("../icons/Left_arrow.png"))
+        self.minimize_button.setIconSize(QSize(24, 24))
+        self.minimize_button.clicked.connect(self.toggle_minimize_tabs)
+
+        # Add the toggle button (on the right)
+        self.toggle_button = QPushButton("Toggle Theme", self)
+        self.toggle_button.clicked.connect(self.toggle_dark_mode)
+
+        # Add buttons to the horizontal layout
+        button_layout.addWidget(self.minimize_button)
+        button_layout.addWidget(self.toggle_button)
+
+        # Align buttons to the left
+        button_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        # Add the button layout to the left panel layout
+        left_panel_layout.addLayout(button_layout)
+
+        # Add the tab list to the layout below the buttons
+        left_panel_layout.addWidget(self.tab_list)
+
+        left_panel_widget.setLayout(left_panel_layout)
+
+        # Add the left panel widget and the tab content area to the splitter
+        self.splitter.addWidget(left_panel_widget)
         self.splitter.addWidget(self.tab_content)
 
         # Control the stretch factor to make the right side expand more
@@ -82,35 +114,6 @@ class MainWindow(QMainWindow):
 
         # Set default selection to the User Management tab
         self.tab_list.setCurrentRow(0)
-
-        # Add a toggle button to minimize/expand the tab list
-        self.minimize_button = QPushButton(self)
-        self.minimize_button.setFixedWidth(150)
-        self.minimize_button.clicked.connect(self.toggle_minimize_tabs)
-
-        # Set initial icon (right arrow for expand)
-        self.minimize_button.setIcon(QIcon("../icons/Left_arrow.png"))
-        self.minimize_button.setIconSize(QSize(24, 24))
-
-        # Add dark mode toggle button
-        self.toggle_button = QPushButton("Toggle Theme", self)
-        self.toggle_button.setFixedWidth(150)
-        self.toggle_button.clicked.connect(self.toggle_dark_mode)
-
-        # Add toggle buttons to the layout
-        self.layout = QVBoxLayout()
-        # Create a horizontal layout to place toggle and minimize buttons side by side
-        self.button_layout = QHBoxLayout()
-        self.button_layout.addWidget(self.toggle_button)  # Add dark mode button
-        self.button_layout.addWidget(self.minimize_button)  # Add minimize button
-        # Add the horizontal button layout to the main vertical layout
-        self.layout.addLayout(self.button_layout)
-        self.layout.addWidget(self.splitter)  # Add the splitter below the buttons
-        self.button_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        self.central_widget = QWidget(self)
-        self.central_widget.setLayout(self.layout)
-        self.setCentralWidget(self.central_widget)
 
         self.is_dark_mode = False
 

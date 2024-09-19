@@ -1,45 +1,34 @@
 import Register_Login
-from PyQt6.QtWidgets import QDialog, QFormLayout, QLabel, QDialogButtonBox, QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QMessageBox, QHeaderView, QInputDialog, QLineEdit
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QDialog, QFormLayout, QLabel, QDialogButtonBox, QWidget, QVBoxLayout, QGridLayout, QPushButton, QMessageBox, QLineEdit, QSizePolicy
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QIcon, QFont
+from PyQt6.QtCore import QSize
 import sqlite3
+import os
 
 class UserManagement(QWidget):
     user_logged_in = pyqtSignal()  # Signal to notify that a user has logged in
 
     def __init__(self):
         super().__init__()
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+
+        # Set up main layout and grid layout for user profiles
+        self.main_layout = QVBoxLayout(self)
+        self.user_grid = QGridLayout()
+        self.user_grid.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center the grid
+        self.main_layout.addLayout(self.user_grid)
 
         # Create Database
         Register_Login.create_db()
 
-        # Users Table
-        self.num_of_rows = self.calculate_rows()
-        self.users_table = QTableWidget()
-        self.users_table.setRowCount(self.num_of_rows)
-        self.users_table.setColumnCount(3)
-        self.users_table.setHorizontalHeaderLabels(['Username', 'Role', 'Status'])
-        self.fill_rows()
-
-        # Adjusting column widths to fit the window size
-        self.users_table.horizontalHeader().setStretchLastSection(True)
-        self.users_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)  # Username column
-        self.users_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Role column
-        self.users_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)  # Status column
-
-        # Add the table to the layout
-        self.layout.addWidget(self.users_table)
+        # Add users to the grid layout
+        self.fill_grid_with_profiles()
 
         # Add User Button
         self.add_user_button = QPushButton("Add User")
         self.add_user_button.clicked.connect(self.add_user)
-        self.layout.addWidget(self.add_user_button)
-
-        # Login Button
-        self.login_button = QPushButton("Login as Selected User")
-        self.login_button.clicked.connect(self.login_user)
-        self.layout.addWidget(self.login_button)
+        self.add_user_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.main_layout.addWidget(self.add_user_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def add_user(self):
         dialog = UserDialog(self)
@@ -54,52 +43,79 @@ class UserManagement(QWidget):
             # Call the create_user method to add the user to the database
             user_created = Register_Login.create_user(username, password)
             if user_created:
-                self.users_table.setRowCount(self.users_table.rowCount() + 1)
-                self.users_table.setItem(self.users_table.rowCount() - 1, 0, QTableWidgetItem(username))
-                self.users_table.setItem(self.users_table.rowCount() - 1, 1, QTableWidgetItem("Auditor"))
-                self.users_table.setItem(self.users_table.rowCount() - 1, 2, QTableWidgetItem("Active"))
+                # Update the grid with the new user
+                self.fill_grid_with_profiles()
                 QMessageBox.information(self, "User Added", "New user has been added successfully.")
             else:
                 QMessageBox.warning(self, "Database Error", "Failed to add the user to the database.")
 
-    def login_user(self):
-        selected_row = self.users_table.currentRow()
-        if selected_row != -1:
-            QMessageBox.information(self, "User Logged In", f"Logged in as {self.users_table.item(selected_row, 0).text()}")
-            self.user_logged_in.emit()  # Emit signal when user logs in
-        else:
-            QMessageBox.warning(self, "Login Failed", "Please select a user to log in.")
+    def login_user(self, username):
+        # Handle user login and emit signal
+        QMessageBox.information(self, "User Logged In", f"Logged in as {username}")
+        self.user_logged_in.emit()
 
-    def calculate_rows(self):
-        mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
-        cursor = mydb.cursor()
-        cursor.execute('SELECT COUNT(Admin_id) FROM Admin')
-        row_count = cursor.fetchone()[0]
-        mydb.close()
-        return row_count
+    def fill_grid_with_profiles(self):
+        # Clear the grid layout first
+        for i in reversed(range(self.user_grid.count())):
+            widget = self.user_grid.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+
+        # Get user data from the database
+        accounts = self.get_users()
+
+        # Populate the grid with profile pictures and usernames
+        row, col = 0, 0
+        for account in accounts:
+            user_id, username = account
+
+            # Create a button for the user profile with an icon (profile picture)
+            user_button = QPushButton()
+            user_button.setIcon(QIcon(self.get_profile_picture_path(user_id)))
+            user_button.setIconSize(QSize(100, 100))  # Set icon size
+            user_button.setFlat(True)  # Make the button flat (no border)
+            user_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+            # Connect button click to login action
+            user_button.clicked.connect(lambda _, u=username: self.login_user(u))
+
+            # Create a label for the username
+            username_label = QLabel(username)
+            username_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            username_label.setFont(QFont('Cascadia Code', 12))  # Set font for username
+
+            # Add button and label to the grid layout
+            self.user_grid.addWidget(user_button, row, col, alignment=Qt.AlignmentFlag.AlignCenter)
+            self.user_grid.addWidget(username_label, row + 1, col, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            # Move to the next column and row
+            col += 1
+            if col >= 3:  # Limit to 3 profiles per row
+                col = 0
+                row += 2
+
+    def get_profile_picture_path(self, user_id):
+        # Get the profile picture path for the user, use a default if not found
+        profile_pic_dir = "../profile_pictures/"
+        profile_pic_path = os.path.join(profile_pic_dir, f"user_{user_id}.png")
+        if not os.path.exists(profile_pic_path):
+            profile_pic_path = "../profile_pictures/pfp.png"  # Default picture
+        return profile_pic_path
 
     def get_users(self):
+        # Retrieve user information from the database
         mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
         cursor = mydb.cursor()
         cursor.execute('SELECT Admin_id, admin_name FROM Admin')
-        rows = []
-        for i in range(self.num_of_rows):
-            row = cursor.fetchone()
-            rows.append(row)
+        rows = cursor.fetchall()
         mydb.close()
         return rows
 
-    def fill_rows(self):
-        accounts = self.get_users()
-        for i in range(self.num_of_rows):
-            id, username = accounts[i][0], accounts[i][1]
-            self.users_table.setItem(i, 0, QTableWidgetItem(username))
-            self.users_table.setItem(i, 1, QTableWidgetItem("Admin"))
-            self.users_table.setItem(i, 2, QTableWidgetItem("Active"))
 class UserDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Add New User")
+
         # Create layout and form fields
         layout = QFormLayout(self)
         self.username_input = QLineEdit(self)
@@ -107,6 +123,7 @@ class UserDialog(QDialog):
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addRow(QLabel("Username:"), self.username_input)
         layout.addRow(QLabel("Password:"), self.password_input)
+
         # OK and Cancel buttons
         self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel, self)
         layout.addWidget(self.buttons)

@@ -1,4 +1,3 @@
-# Optional: Add profile icon, status (active/inactive) columns in db.
 import os
 import hashlib
 import sqlite3
@@ -22,7 +21,6 @@ def create_db():
 
 
 def create_secure_password(password, salt=os.urandom(16).hex()):
-    # iterations = 100_000
     password_hash = hashlib.sha256((salt + password).encode()).hexdigest()
     return [password_hash, salt]
 
@@ -46,13 +44,12 @@ def create_user(username, password):
         mydb.close()
 
 
-def login_user(username, password):
+def login_user(username, input_password):
     mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
     cursor = mydb.cursor()
     cursor.execute('SELECT EXISTS(SELECT admin_name FROM Admin WHERE admin_name = ?)', (username,))
     exists = cursor.fetchone()
     if exists:
-        input_password = input(r"Enter your Password: ")
         cursor.execute('SELECT password, salt FROM Admin WHERE admin_name = ?', (username,))
         stored_password, stored_salt = cursor.fetchone()
         if stored_password == create_secure_password(input_password, stored_salt)[0]:

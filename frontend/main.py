@@ -1,8 +1,8 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QSplitter, QListWidget, QStackedWidget, QListWidgetItem
+import os
+from PyQt6.QtWidgets import QApplication, QMainWindow, QSplitter, QListWidget, QStackedWidget, QListWidgetItem, QPushButton, QWidget, QVBoxLayout
 from PyQt6.QtGui import QIcon, QFont
 from PyQt6.QtCore import Qt, QSize
-import os
 
 # Direct imports since all files are in the same directory
 from userLogins import UserManagement
@@ -23,28 +23,7 @@ class MainWindow(QMainWindow):
 
         # Create list widget for tab navigation (left window)
         self.tab_list = QListWidget()
-
-        # Set large icon size for the tabs
         self.tab_list.setIconSize(QSize(48, 48))
-
-        # Apply custom styling: remove black background and set text color to black
-        self.tab_list.setStyleSheet("""
-            QListWidget {
-                font-size: 20px;  /* Larger font size */
-                color: black;  /* Set text color to black */
-            }
-            QListWidget::item {
-                padding: 10px;  /* Add space between items */
-                margin-bottom: 10px;  /* Additional space at the bottom of each item */
-            }
-            QListWidget::item:selected {
-                background-color: lightgray;  /* Light gray when selected */
-                color: black;
-            }
-        """)
-
-        # Align text properly by adding enough space after the icon
-        self.tab_list.setUniformItemSizes(True)
 
         # Add tabs with icons
         self.add_tab("Profile", "../icons/profile.png", 0)
@@ -54,28 +33,18 @@ class MainWindow(QMainWindow):
         self.add_tab("Results Display", "../icons/results.png", 4)
         self.add_tab("Issue Management", "../icons/issues.png", 5)
 
-        # Reduce the default width of the left panel (tab list)
-        self.tab_list.setFixedWidth(300)
+        self.tab_list.setFixedWidth(250)
 
         # Create stacked widget to display the selected tab's content (right window)
         self.tab_content = QStackedWidget()
-
-        # Set font size and font family for the right panel content
-        self.tab_content.setStyleSheet("""
-            QWidget {
-                font-size: 16px;  /* Set text size to 16px */
-                font-family: 'Palatino Linotype';  /* Set font to Palatino Linotype */
-                color: black;  /* Set text color to black */
-            }
-        """)
 
         # Add the list and the tab content area to the splitter
         self.splitter.addWidget(self.tab_list)
         self.splitter.addWidget(self.tab_content)
 
         # Control the stretch factor to make the right side expand more
-        self.splitter.setStretchFactor(0, 0)  # Left widget (tab list)
-        self.splitter.setStretchFactor(1, 1)  # Right widget (content)
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(1, 1)
 
         # Create the tabs and add them to the stacked widget
         self.user_management_tab = UserManagement()
@@ -108,10 +77,25 @@ class MainWindow(QMainWindow):
         # Set default selection to the User Management tab
         self.tab_list.setCurrentRow(0)
 
+        # Add dark mode toggle button
+        self.toggle_button = QPushButton("Toggle Theme", self)
+        self.toggle_button.setFixedWidth(150)
+        self.toggle_button.clicked.connect(self.toggle_dark_mode)
+
+        # Add toggle button to the layout
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.splitter)
+        self.layout.addWidget(self.toggle_button)
+
+        self.central_widget = QWidget(self)
+        self.central_widget.setLayout(self.layout)
+        self.setCentralWidget(self.central_widget)
+
+        self.is_dark_mode = False
+
     def add_tab(self, name, icon_path, index):
         """Add a tab with an icon and name to the QListWidget"""
         item = QListWidgetItem(QIcon(icon_path), name)
-        # Set alignment to make sure text starts after the icon at the same point
         item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.tab_list.addItem(item)
 
@@ -120,10 +104,8 @@ class MainWindow(QMainWindow):
         for i in range(1, self.tab_list.count()):
             item = self.tab_list.item(i)
             if enable:
-                # Enable the tab
                 item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
             else:
-                # Disable the tab
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
 
     def on_user_logged_in(self):
@@ -134,62 +116,61 @@ class MainWindow(QMainWindow):
         """Switch to the corresponding tab content based on the index"""
         self.tab_content.setCurrentIndex(index)
 
+    def toggle_dark_mode(self):
+        """Toggle between light and dark mode"""
+        if self.is_dark_mode:
+            self.set_light_mode()
+        else:
+            self.set_dark_mode()
+        self.is_dark_mode = not self.is_dark_mode
+
+    def set_light_mode(self):
+        """Set the light mode stylesheet"""
+        self.setStyleSheet("""
+            QWidget {
+                background-color: white;
+                color: black;
+            }
+            QListWidget {
+                font-size: 20px;
+                color: black;
+            }
+            QListWidget::item:selected {
+                background-color: lightgray;
+                color: black;
+            }
+        """)
+
+    def set_dark_mode(self):
+        """Set the dark mode stylesheet"""
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #2b2b2b;
+                color: white;
+            }
+            QListWidget {
+                font-size: 20px;
+                color: white;
+            }
+            QListWidget::item:selected {
+                background-color: #505050;
+                color: white;
+            }
+        """)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setApplicationName("Ageis Audit")
 
-    # Ensure the correct path for the logo icon
-    logo_path = os.path.abspath("../icons/logo.png")  # Convert to absolute path
-
-    # Set the window icon with the correct path
+    logo_path = os.path.abspath("../icons/logo.png")
     if os.path.exists(logo_path):
         app.setWindowIcon(QIcon(logo_path))
     else:
         print(f"Logo file not found at {logo_path}")
 
-    # Set global application font to "Palatino Linotype"
     app_font = QFont("Palatino Linotype", 12)
     app.setFont(app_font)
-
-    # Set global styling with Palatino Linotype font and black text
-    app.setStyleSheet("""
-        QWidget {
-            color: black;  /* Set text color to black */
-            font-family: 'Palatino Linotype';  /* Use Palatino Linotype globally */
-        }
-        QPushButton {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QLabel {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QLineEdit {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QComboBox {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QTableView {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QHeaderView::section {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QTabBar::tab {
-            color: black;
-            font-family: 'Palatino Linotype';
-        }
-        QTabBar::tab:selected {
-            background-color: lightgray;  /* Light gray on selection */
-        }
-    """)
 
     window = MainWindow()
     window.showMaximized()

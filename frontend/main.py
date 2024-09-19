@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.add_tab("Issue Management", "../icons/issues.png", 5)
 
         # Reduce the default width of the left panel (tab list)
-        self.tab_list.setFixedWidth(250)
+        self.tab_list.setFixedWidth(300)
 
         # Create stacked widget to display the selected tab's content (right window)
         self.tab_content = QStackedWidget()

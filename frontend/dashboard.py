@@ -1,7 +1,10 @@
+# Import the constant at the top of the file
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QPushButton, QLabel, QSplitter, QTableWidgetItem
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 
+LEFT_PANEL_WIDTH = 150  # Common width constant for left panel
+RIGHT_PANEL_WIDTH = 1475  # Common width constant for right panel
 
 class Dashboard(QWidget):
     def __init__(self):
@@ -18,12 +21,12 @@ class Dashboard(QWidget):
         self.left_panel_layout = QVBoxLayout()
         self.left_panel_widget.setLayout(self.left_panel_layout)
 
-        # Set a fixed width for the left panel to reduce its size
-        self.left_panel_widget.setFixedWidth(150)  # Adjust this value as needed
+        # Set a fixed width for the left panel using the constant
+        self.left_panel_widget.setFixedWidth(LEFT_PANEL_WIDTH)
 
         # Button-like tabs with icons and text
-        self.summary_button = QPushButton(" Summary")
-        self.history_button = QPushButton(" History")
+        self.summary_button = QPushButton("Summary")
+        self.history_button = QPushButton("History")
 
         # Set icons to the buttons
         summary_icon = QIcon(r"..\images\dashboard\Summary.png")  # Replace with correct path
@@ -50,12 +53,14 @@ class Dashboard(QWidget):
         self.right_panel_layout = QVBoxLayout()
         self.right_panel.setLayout(self.right_panel_layout)
 
+        # Set a fixed width for the right panel using the constant
+        self.right_panel.setFixedWidth(RIGHT_PANEL_WIDTH)
+
         # Initially hide the right panel
         self.right_panel.setVisible(False)
 
         # Add right panel to the splitter
         self.splitter.addWidget(self.right_panel)
-        self.splitter.setStretchFactor(1, 4)  # Give more space to the right panel
 
         # Table for summary details (will be shown in the right panel)
         self.summary_table = QTableWidget()

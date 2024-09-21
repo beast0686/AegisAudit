@@ -3,7 +3,7 @@ import os
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSplitter, QListWidget, QStackedWidget, QListWidgetItem, \
     QPushButton, QWidget, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QIcon, QFont
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt, QSize, QPropertyAnimation, QPoint
 
 # Direct imports since all files are in the same directory
 from userLogins import UserManagement
@@ -12,6 +12,62 @@ from configuration import AuditConfiguration
 from executionControl import ExecutionControl
 from result import ResultsDisplay
 from issues import IssueManagement
+
+
+class ToggleSwitch(QPushButton):
+    """Custom toggle button slider with animation."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setMaximumSize(80, 30)  # Increased width
+        self.setStyleSheet(self.light_style())  # Set initial light theme style
+
+        self.slider = QWidget(self)
+        self.slider.setFixedSize(30, 30)
+        self.slider.setStyleSheet("background-color: white; border-radius: 15px;")
+
+        self.animation = QPropertyAnimation(self.slider, b"pos", self)
+        self.animation.setDuration(200)
+
+        self.clicked.connect(self.animate_slider)
+
+    def animate_slider(self):
+        """Animate the slider when the button is toggled."""
+        self.animation.stop()  # Stop any ongoing animation
+        if self.isChecked():
+            self.animation.setStartValue(self.slider.pos())
+            self.animation.setEndValue(QPoint(self.width() - self.slider.width(), 0))
+        else:
+            self.animation.setStartValue(self.slider.pos())
+            self.animation.setEndValue(QPoint(0, 0))
+
+        self.animation.start()
+        self.update_style()
+
+    def update_style(self):
+        """Update the switch style depending on its state."""
+        if self.isChecked():
+            self.setStyleSheet(self.dark_style())
+        else:
+            self.setStyleSheet(self.light_style())
+
+    def light_style(self):
+        return """
+            ToggleSwitch {
+                background-color: #ccc;
+                border-radius: 15px;
+            }
+            """
+
+    def dark_style(self):
+        return """
+            ToggleSwitch {
+                background-color: #505050;
+                border-radius: 15px;
+            }
+            """
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -57,13 +113,13 @@ class MainWindow(QMainWindow):
         self.minimize_button.setIconSize(QSize(24, 24))
         self.minimize_button.clicked.connect(self.toggle_minimize_tabs)
 
-        # Add the toggle button (on the right)
-        self.toggle_button = QPushButton("Toggle Theme", self)
-        self.toggle_button.clicked.connect(self.toggle_dark_mode)
+        # Add the toggle button slider for theme switching (on the right)
+        self.theme_toggle = ToggleSwitch(self)
+        self.theme_toggle.clicked.connect(self.toggle_dark_mode)
 
         # Add buttons to the horizontal layout
         button_layout.addWidget(self.minimize_button)
-        button_layout.addWidget(self.toggle_button)
+        button_layout.addWidget(self.theme_toggle)
 
         # Align buttons to the left
         button_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)

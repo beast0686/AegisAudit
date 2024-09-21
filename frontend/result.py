@@ -4,7 +4,6 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 import csv
 
-
 class ResultsDisplay(QWidget):
     def __init__(self):
         super().__init__()
@@ -23,6 +22,9 @@ class ResultsDisplay(QWidget):
         self.left_panel_widget = QWidget()
         self.left_panel_layout = QVBoxLayout()
         self.left_panel_widget.setLayout(self.left_panel_layout)
+
+        # Set fixed width for the left panel
+        self.left_panel_widget.setFixedWidth(150)  # Adjust the width value as needed
 
         # Programs and Checks buttons with icons
         self.programs_button = QPushButton(" Programs")
@@ -54,6 +56,9 @@ class ResultsDisplay(QWidget):
         self.right_panel_layout = QVBoxLayout()
         self.right_panel.setLayout(self.right_panel_layout)
 
+        # Initially, hide the right panel
+        self.right_panel.setVisible(False)
+
         # Programs Table
         self.programs_table = QTableWidget()
         self.programs_table.setRowCount(5)  # Example: 5 programs
@@ -76,12 +81,12 @@ class ResultsDisplay(QWidget):
         self.checks_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.checks_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
-        # Initially, display the programs table in the right panel
-        self.right_panel_layout.addWidget(self.programs_table)
-
         # Add right panel to the splitter
         self.splitter.addWidget(self.right_panel)
         self.splitter.setStretchFactor(1, 2)
+
+        # Initially hide the right panel content
+        self.right_panel.setVisible(False)
 
         # Connect buttons to switch between programs and checks table
         self.programs_button.clicked.connect(lambda: self.switch_tab(0))
@@ -108,6 +113,9 @@ class ResultsDisplay(QWidget):
             self.right_panel_layout.addWidget(self.programs_table)
         elif index == 1:  # Checks Tab
             self.right_panel_layout.addWidget(self.checks_table)
+
+        # Show the right panel when a tab is selected
+        self.right_panel.setVisible(True)
 
     def display_checks(self):
         # Get selected program

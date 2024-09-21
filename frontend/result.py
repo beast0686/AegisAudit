@@ -24,7 +24,7 @@ class ResultsDisplay(QWidget):
         self.left_panel_widget.setLayout(self.left_panel_layout)
 
         # Set fixed width for the left panel
-        self.left_panel_widget.setFixedWidth(150)  # Adjust the width value as needed
+        self.left_panel_widget.setFixedWidth(150)
 
         # Programs and Checks buttons with icons
         self.programs_button = QPushButton(" Programs")

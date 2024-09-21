@@ -4,7 +4,7 @@ import sqlite3
 
 def create_db():
     try:
-        mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
+        mydb = sqlite3.connect("AegisAudit.db")
         cursor = mydb.cursor()
         print("Connection established")
         cursor.execute('''CREATE TABLE IF NOT EXISTS Admin(
@@ -25,7 +25,7 @@ def create_secure_password(password, salt=os.urandom(16).hex()):
     return [password_hash, salt]
 
 def create_user(username, password):
-    mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
+    mydb = sqlite3.connect("AegisAudit.db")
     cursor = mydb.cursor()
     try:
         secure_password_with_salt = create_secure_password(password)
@@ -45,7 +45,7 @@ def create_user(username, password):
 
 
 def login_user(username, input_password):
-    mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
+    mydb = sqlite3.connect("AegisAudit.db")
     cursor = mydb.cursor()
     cursor.execute('SELECT EXISTS(SELECT admin_name FROM Admin WHERE admin_name = ?)', (username,))
     exists = cursor.fetchone()

@@ -117,7 +117,7 @@ class UserManagement(QWidget):
 
     def get_users(self):
         # Retrieve user information from the database
-        mydb = sqlite3.connect("../../AegisAudit/frontend/AegisAudit.db")
+        mydb = sqlite3.connect("AegisAudit.db")
         cursor = mydb.cursor()
         cursor.execute('SELECT Admin_id, admin_name FROM Admin')
         rows = cursor.fetchall()

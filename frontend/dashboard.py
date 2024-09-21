@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QPushButton, QLabel, QSplitter, QTableWidgetItem  # Add QTableWidgetItem
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QPushButton, QLabel, QSplitter, QTableWidgetItem
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 
@@ -17,6 +17,9 @@ class Dashboard(QWidget):
         self.left_panel_widget = QWidget()
         self.left_panel_layout = QVBoxLayout()
         self.left_panel_widget.setLayout(self.left_panel_layout)
+
+        # Set a fixed width for the left panel to reduce its size
+        self.left_panel_widget.setFixedWidth(150)  # Adjust this value as needed
 
         # Button-like tabs with icons and text
         self.summary_button = QPushButton(" Summary")
@@ -41,12 +44,18 @@ class Dashboard(QWidget):
 
         # Add left panel to the splitter
         self.splitter.addWidget(self.left_panel_widget)
-        self.splitter.setStretchFactor(0, 1)
 
         # Right Panel: This is where the tables (Summary/History) will be shown
         self.right_panel = QWidget()
         self.right_panel_layout = QVBoxLayout()
         self.right_panel.setLayout(self.right_panel_layout)
+
+        # Initially hide the right panel
+        self.right_panel.setVisible(False)
+
+        # Add right panel to the splitter
+        self.splitter.addWidget(self.right_panel)
+        self.splitter.setStretchFactor(1, 4)  # Give more space to the right panel
 
         # Table for summary details (will be shown in the right panel)
         self.summary_table = QTableWidget()
@@ -81,19 +90,17 @@ class Dashboard(QWidget):
         self.add_audit_history_row(1, "Security Policy Audit", False, "2024-09-02")
         self.add_audit_history_row(2, "Database Integrity Check", True, "2024-09-03")
 
-        # Initially, display the summary table in the right panel
-        self.right_panel_layout.addWidget(self.summary_table)
-
-        # Add right panel to the splitter
-        self.splitter.addWidget(self.right_panel)
-        self.splitter.setStretchFactor(1, 2)
-
         # Connect buttons to switch content in the right panel
         self.summary_button.clicked.connect(lambda: self.switch_tab(0))
         self.history_button.clicked.connect(lambda: self.switch_tab(1))
 
     def switch_tab(self, index):
         """Switch the right panel content based on the selected tab."""
+        # Hide the right panel if no valid tab is selected
+        if index is None:
+            self.right_panel.setVisible(False)
+            return
+
         # Clear the right panel layout
         for i in reversed(range(self.right_panel_layout.count())):
             widget = self.right_panel_layout.itemAt(i).widget()
@@ -105,6 +112,9 @@ class Dashboard(QWidget):
             self.right_panel_layout.addWidget(self.summary_table)
         elif index == 1:  # History Tab
             self.right_panel_layout.addWidget(self.audit_history_table)
+
+        # Show the right panel when a tab is selected
+        self.right_panel.setVisible(True)
 
     def add_audit_history_row(self, row, audit_name, completed, date):
         self.audit_history_table.setItem(row, 0, QTableWidgetItem(audit_name))

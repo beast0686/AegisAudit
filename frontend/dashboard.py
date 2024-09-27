@@ -1,10 +1,9 @@
-# Import the constant at the top of the file
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QPushButton, QLabel, QSplitter, QTableWidgetItem
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QPushButton, QLabel, \
+    QSplitter, QTableWidgetItem, QSizePolicy
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 
 LEFT_PANEL_WIDTH = 150  # Common width constant for left panel
-RIGHT_PANEL_WIDTH = 1475  # Common width constant for right panel
 
 class Dashboard(QWidget):
     def __init__(self):
@@ -53,8 +52,8 @@ class Dashboard(QWidget):
         self.right_panel_layout = QVBoxLayout()
         self.right_panel.setLayout(self.right_panel_layout)
 
-        # Set a fixed width for the right panel using the constant
-        self.right_panel.setFixedWidth(RIGHT_PANEL_WIDTH)
+        # Set width for the right panel using the constant
+        self.right_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # Initially hide the right panel
         self.right_panel.setVisible(False)
